@@ -20,6 +20,25 @@ class PizzaService {
         return  returnEntity;
     }
 
+    getByOrder = async (Order)=>{
+        let returnEntity = null;
+        let SelectV;
+        console.log("Estoy en PizzaService.getByOrder")
+        console.log(Order)
+        try{
+            SelectV = 'SELECT * FROM Pizzas ORDER BY ' + Order;
+            console.log(SelectV)
+            let pool = await sql.connect(config);
+            let result = await pool.request().query(SelectV);
+            returnEntity = result.recordset;
+        }
+        catch(error){
+            console.log(error.toString());
+            hola.logErr(error.toString());
+        }
+        return  returnEntity;
+    }
+
     getById = async (id) => {
         let returnEntity = null;
         console.log("Estoy en PizzaService.getById")
@@ -64,7 +83,8 @@ class PizzaService {
                                             .input('pLibreGluten', sql.Bit, pizza?.LibreGluten?? false)
                                             .input('pImporte', sql.Float, pizza?.Importe?? 0)
                                             .input('pDescripcion', sql.NChar, pizza?.Descripcion ?? '')
-                                            .query('UPDATE Pizzas SET Nombre = @pNombre, LibreGluten = @pLibreGluten, Importe = @pImporte, Descripcion = @pDescripcion WHERE Id = @pId');
+                                            .input('pDescuento', sql.Int, pizza?.Descuento?? 0)
+                                            .query('UPDATE Pizzas SET Nombre = @pNombre, LibreGluten = @pLibreGluten, Importe = @pImporte, Descripcion = @pDescripcion, Descuento = @pDescuento WHERE Id = @pId');
             rowsAffected = result.rowsAffected;
         } catch (error) {
             hola.logErr(error.toString())
@@ -74,16 +94,20 @@ class PizzaService {
     
     insert = async (pizza) =>{
         let rowsAffected = 0;
+        let sqlText;
         console.log('Estoy en PizzaService.insert')
         try {
             console.log(pizza);
             let pool = await sql.connect(config);
+            sqlText = 'INSERT INTO Pizzas(Nombre, LibreGluten, Importe, Descripcion, Descuento) VALUES (@pNombre, @pLibreGluten, @pImporte, @pDescripcion, @pDescuento)';
+            console.log(sqlText);
             let result = await pool.request()
                                             .input('pNombre', sql.NChar, pizza.Nombre)
                                             .input('pLibreGluten', sql.Bit, pizza.LibreGluten)
                                             .input('pImporte', sql.Float, pizza.Importe)
                                             .input('pDescripcion', sql.NChar, pizza.Descripcion)
-                                            .query('INSERT INTO Pizzas(Nombre, LibreGluten, Importe, Descripcion) VALUES (@pNombre, @pLibreGluten, @pImporte, @pDescripcion)');
+                                            .input('pDescuento', sql.Int, pizza.Descuento)
+                                            .query(sqlText);
             rowsAffected = result.rowsAffected;
             
         } catch (error) {

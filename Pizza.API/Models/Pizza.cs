@@ -7,5 +7,6 @@ namespace Pizza.API.Models {
         public bool     LibreGluten     { get; set; }
         public float    Importe         { get; set; }
         public string   Descripcion     { get; set; }
+        public int      Descuento       { get; set; }
     }
 }

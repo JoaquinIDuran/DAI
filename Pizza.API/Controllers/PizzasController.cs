@@ -39,6 +39,32 @@ namespace Pizza.API.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult GetByOrder(string Order){
+            IActionResult respuesta;
+            List<Pizza.API.Models.Pizza> _listaPizzas = PizzasServices.GetByOrder(Order); 
+            try{
+                if(_listaPizzas==null){
+                    respuesta = NotFound();
+                }
+                else{
+                    respuesta = Ok(_listaPizzas);
+                }
+                return respuesta;
+            }
+            catch(Exception ex){
+                MethodBase m = MethodBase.GetCurrentMethod();
+                CustomLog.LogError(ex, m.DeclaringType.Name, m.Name);
+                respuesta = Problem("Hubo un - Internal Server Error!!", 
+                HttpContext.Request.GetDisplayUrl(), 
+                StatusCodes.Status500InternalServerError, 
+                "Surgió un Error", "Http://www.problemas-resolver.com/error-delete" );
+                return respuesta;
+            }
+        }
+
+        
+
         [HttpGet("{id}")]
         public IActionResult GetById(int id){
             IActionResult respuesta;

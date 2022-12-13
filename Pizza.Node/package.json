@@ -9,7 +9,7 @@
     "start": "nodemon index.js",
     "start1": "nodemon index1.js"
   },
-  "author": "Abraldes Joaquin & Yoo Santino",
+  "author": "joaquin duran",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.1",

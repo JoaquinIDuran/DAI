@@ -4,15 +4,25 @@ import PizzaService from "../services/pizzas-services.js";
 const router = Router()
 const srv = new PizzaService();
 
-// router.get('', async (req, res)=>{
-//     const pizza = await pizzaService.getAll();
-//     return res.status(200).json
-// })
+/*router.get('', async (req, res)=>{
+    const pizza = await PizzaService.getAll();
+    return res.status(200).json
+ })*/
 
 router.get('/', async (req, res) => {
     console.log('router.get');
     let datos = await srv.getAll();
     res.send(datos);
+  })
+
+  router.get('/:Order', async (req, res) => {
+    console.log('router.get');
+    let datos = await srv.getByOrder(req.params['Order']);
+    if (datos != null) {
+      res.send(datos);
+    } else {
+      res.status(404).send('Perdon, no se ha encontrado');
+    }
   })
 
   router.get('/:id', async (req, res) => {
@@ -56,11 +66,11 @@ router.get('/', async (req, res) => {
       res.status(404).send('Error');
     }
   })
-/*
+
 router.get('/api/pizzas', srv.getAll)
 router.get('/api/pizzas/:Id', srv.getById)
 router.post('/api/pizzas', srv.insert)
 router.put('/api/pizzas', srv.update)
 router.delete('/api/pizzas/:Id', srv.deleteById)
-*/
+
 export default router;

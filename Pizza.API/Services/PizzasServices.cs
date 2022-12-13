@@ -26,6 +26,21 @@ namespace Pizza.API.Services { //Añadir try and catch
             }
             return returnList;
         }
+        public static List<Entidad> GetByOrder(string Order) {
+            List<Entidad> returnList;
+            returnList = new List<Entidad>();
+            string sql = "SELECT * FROM Pizzas ORDER BY " + Order;
+            try{
+                using (SqlConnection db = BD.GetConnection()) {
+                    returnList = db.Query<Entidad>(sql).ToList();
+                }
+            }
+            catch(Exception ex){
+                CustomLog.LogError(ex, "PizzasServicies", "GetByOrder(string Order)", sql);
+                throw;
+            }
+            return returnList;
+        }
 
         public static Entidad GetById(int id){
             Entidad pizza = null;
@@ -48,7 +63,7 @@ namespace Pizza.API.Services { //Añadir try and catch
             string sp = "agregarPizza";
             try{
                 using (SqlConnection db = BD.GetConnection()){
-                clavePrimaria = db.QuerySingle<int>(sp, new {nombre = pizza.Nombre, libreGluten = pizza.LibreGluten, importe = pizza.Importe, descripcion = pizza.Descripcion}, 
+                clavePrimaria = db.QuerySingle<int>(sp, new {nombre = pizza.Nombre, libreGluten = pizza.LibreGluten, importe = pizza.Importe, descripcion = pizza.Descripcion, Descuento = pizza.Descuento}, 
                         commandType: CommandType.StoredProcedure);
                 pizza.Id = clavePrimaria;
                 }
@@ -65,7 +80,7 @@ namespace Pizza.API.Services { //Añadir try and catch
             string sp = "actualizarPizza";
             try{
                 using(SqlConnection db = BD.GetConnection()){
-                    cambios = db.Execute(sp, new {id = pizza.Id, nombre = pizza.Nombre, libreGluten = pizza.LibreGluten, importe = pizza.Importe, descripcion = pizza.Descripcion},
+                    cambios = db.Execute(sp, new {id = pizza.Id, nombre = pizza.Nombre, libreGluten = pizza.LibreGluten, importe = pizza.Importe, descripcion = pizza.Descripcion, Descuento = pizza.Descuento},
                             commandType: CommandType.StoredProcedure);
                 }
             }
